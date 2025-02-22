@@ -1,7 +1,12 @@
 package dev.spacety.jam.gui.listeners;
 
 import dev.spacety.jam.gui.pages.*;
+import dev.spacety.jam.handlers.ServerSettingsHandler;
+import dev.spacety.jam.JAM;
+
+import org.bukkit.Difficulty;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +20,7 @@ public class GUIListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         String title = event.getView().getTitle();
-        if (!title.startsWith("§8JAM Admin Panel")) {
+        if (!title.startsWith(JAM.getString("gui.main-menu").split(" - ")[0])) {
             return;
         }
 
@@ -31,32 +36,49 @@ public class GUIListener implements Listener {
             return;
         }
 
-        // Main Menu Navigation
-        if (title.equals("§8JAM Admin Panel - Main Menu")) {
+        if (title.equals(JAM.getString("gui.main-menu"))) {
             handleMainMenu(player, clickedItem);
         }
-        // Player Management Navigation
-        else if (title.equals("§8JAM Admin Panel - Player Management")) {
+        else if (title.equals(JAM.getString("gui.player-management"))) {
             handlePlayerManagement(player, clickedItem);
         }
-        // Self Management Navigation
-        else if (title.equals("§8JAM Admin Panel - Self Management")) {
+        else if (title.equals(JAM.getString("gui.self-management"))) {
             handleSelfManagement(player, clickedItem);
         }
-        // Server Settings Navigation
-        else if (title.equals("§8JAM Admin Panel - Server Settings")) {
+        else if (title.equals(JAM.getString("gui.server-settings"))) {
             handleServerSettings(player, clickedItem);
+        }
+        else if (title.equals(JAM.getString("gui.difficulty-selection"))) {
+            handleDifficultySelection(player, clickedItem);
         }
     }
 
     private void handleMainMenu(Player player, ItemStack clickedItem) {
+        if (!JAM.getBoolean("features.player-management.enabled") && 
+            !JAM.getBoolean("features.self-management.enabled") && 
+            !JAM.getBoolean("features.server-settings.enabled")) {
+            return;
+        }
+
         Material type = clickedItem.getType();
-        if (type == Material.PLAYER_HEAD) {
-            player.openInventory(new PlayerManagementPage(player).getInventory());
-        } else if (type == Material.ARMOR_STAND) {
-            player.openInventory(new SelfPage(player).getInventory());
-        } else if (type == Material.REDSTONE) {
-            player.openInventory(new ServerSettingsPage(player).getInventory());
+        switch (type) {
+            case PLAYER_HEAD:
+                if (JAM.getBoolean("features.player-management.enabled")) {
+                    player.openInventory(new PlayerManagementPage(player).getInventory());
+                }
+                break;
+            case ARMOR_STAND:
+                if (JAM.getBoolean("features.self-management.enabled")) {
+                    player.openInventory(new SelfPage(player).getInventory());
+                }
+                break;
+            case REDSTONE:
+                if (JAM.getBoolean("features.server-settings.enabled")) {
+                    player.openInventory(new ServerSettingsPage(player).getInventory());
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -68,13 +90,21 @@ public class GUIListener implements Listener {
 
         switch (clickedItem.getType()) {
             case DIAMOND_SWORD:
-                PlayerMessage.send((Audience) player, "&eKick player feature coming soon!");
+                if (JAM.getBoolean("features.player-management.kick")) {
+                    PlayerMessage.send((Audience) player, JAM.getString("messages.feature-coming-soon").replace("{feature}", "Kick player"));
+                }
                 break;
             case BARRIER:
-                PlayerMessage.send((Audience) player, "&cBan player feature coming soon!");
+                if (JAM.getBoolean("features.player-management.ban")) {
+                    PlayerMessage.send((Audience) player, JAM.getString("messages.feature-coming-soon").replace("{feature}", "Ban player"));
+                }
                 break;
             case PAPER:
-                PlayerMessage.send((Audience) player, "&aPlayer list feature coming soon!");
+                if (JAM.getBoolean("features.player-management.player-list")) {
+                    PlayerMessage.send((Audience) player, JAM.getString("messages.feature-coming-soon").replace("{feature}", "Player list"));
+                }
+                break;
+            default:
                 break;
         }
     }
@@ -87,23 +117,35 @@ public class GUIListener implements Listener {
 
         switch (clickedItem.getType()) {
             case COMPASS:
-                PlayerMessage.send((Audience) player, "&eTeleport feature coming soon!");
+                if (JAM.getBoolean("features.self-management.teleport")) {
+                    PlayerMessage.send((Audience) player, JAM.getString("messages.feature-coming-soon").replace("{feature}", "Teleport"));
+                }
                 break;
             case GOLDEN_APPLE:
-                player.setHealth(player.getMaxHealth());
-                player.setFoodLevel(20);
-                PlayerMessage.send((Audience) player, "&aYou have been healed!");
+                if (JAM.getBoolean("features.self-management.heal")) {
+                    player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getValue());
+                    player.setFoodLevel(20);
+                    PlayerMessage.send((Audience) player, JAM.getString("messages.heal-success"));
+                }
                 break;
             case FEATHER:
-                boolean flying = !player.getAllowFlight();
-                player.setAllowFlight(flying);
-                player.setFlying(flying);
-                PlayerMessage.send((Audience) player, flying ? "&bFlight mode enabled!" : "&7Flight mode disabled!");
+                if (JAM.getBoolean("features.self-management.fly")) {
+                    boolean flying = !player.getAllowFlight();
+                    player.setAllowFlight(flying);
+                    player.setFlying(flying);
+                    PlayerMessage.send((Audience) player, flying ? JAM.getString("messages.flight-enabled") : JAM.getString("messages.flight-disabled"));
+                }
+                break;
+            default:
                 break;
         }
     }
 
     private void handleServerSettings(Player player, ItemStack clickedItem) {
+        String title = player.getOpenInventory().getTitle();
+        System.out.println(title);
+        
+        
         if (clickedItem.getType() == Material.ARROW) {
             player.openInventory(new IndexPage(player).getInventory());
             return;
@@ -111,13 +153,23 @@ public class GUIListener implements Listener {
 
         switch (clickedItem.getType()) {
             case CLOCK:
-                PlayerMessage.send((Audience) player, "&eTime control feature coming soon!");
+                if (JAM.getBoolean("features.server-settings.time-control")) {
+                    // Set time to day (6000 ticks)
+                    ServerSettingsHandler.setTime(player, player.getWorld(), 6000);
+                }
                 break;
             case WATER_BUCKET:
-                PlayerMessage.send((Audience) player, "&bWeather control feature coming soon!");
+                if (JAM.getBoolean("features.server-settings.weather-control")) {
+                    // Toggle weather
+                    ServerSettingsHandler.setWeather(player, player.getWorld(), !player.getWorld().hasStorm());
+                }
                 break;
             case BEDROCK:
-                PlayerMessage.send((Audience) player, "&cDifficulty control feature coming soon!");
+                if (JAM.getBoolean("features.server-settings.difficulty-control")) {
+                    player.openInventory(new DifficultyPage(player).getInventory());
+                }
+                break;
+            default:
                 break;
         }
     }

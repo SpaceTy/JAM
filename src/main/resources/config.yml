@@ -1,0 +1,69 @@
+# JAM Configuration File
+
+# GUI Titles
+gui:
+  main-menu: "§8JAM Admin Panel - Main Menu"
+  player-management: "§8JAM Admin Panel - Player Management"
+  self-management: "§8JAM Admin Panel - Self Management"
+  server-settings: "§8JAM Admin Panel - Server Settings"
+  difficulty-selection: "§8JAM Admin Panel - Difficulty Selection"
+
+# Messages
+messages:
+  no-permission: "&cYou don't have permission to use this command!"
+  players-only: "&cThis command can only be used by players!"
+  heal-success: "&aYou have been healed!"
+  flight-enabled: "&bFlight mode enabled!"
+  flight-disabled: "&7Flight mode disabled!"
+  feature-coming-soon: "&e{feature} feature coming soon!"
+
+# Features
+features:
+  player-management:
+    enabled: true
+    kick: true
+    ban: true
+    player-list: true
+  self-management:
+    enabled: true
+    teleport: true
+    heal: true
+    fly: true
+  server-settings:
+    enabled: true
+    time-control: true
+    weather-control: true
+    difficulty-control: true
+    difficulty-page:
+      enabled: true
+      peaceful:
+        name: "§aPeaceful"
+        lore:
+          - "§7No hostile mobs will spawn"
+          - "§7Players can't take damage"
+          - "§7Hunger bar won't deplete"
+      easy:
+        name: "§eEasy"
+        lore:
+          - "§7Hostile mobs will spawn"
+          - "§7Players take less damage"
+          - "§7Hunger depletes slowly"
+      normal:
+        name: "§6Normal"
+        lore:
+          - "§7Standard difficulty"
+          - "§7Normal damage and hunger"
+          - "§7Default game experience"
+      hard:
+        name: "§cHard"
+        lore:
+          - "§7Increased mob damage"
+          - "§7Hunger depletes faster"
+          - "§7More challenging experience"
+
+# Items
+items:
+  back-button:
+    material: ARROW
+    name: "§7Back to Main Menu"
+    lore: "§7Click to return"
