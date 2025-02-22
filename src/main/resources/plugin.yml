@@ -1,0 +1,14 @@
+name: JAM
+version: 0.1
+main: dev.spacety.jam.JAM
+api-version: 1.21
+author: Jucey, SpaceTy
+description: A gui for administrators of a server to manage their server.
+
+commands:
+  jam:
+    description: Open's the admin menu.
+    usage: /jam
+    permission: jam.admin
+    permission-message: You do not have permission to use this command.
+    aliases: [j, menu]
