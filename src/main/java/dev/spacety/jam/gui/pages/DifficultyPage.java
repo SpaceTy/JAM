@@ -1,8 +1,12 @@
 package dev.spacety.jam.gui.pages;
 
+import org.bukkit.Difficulty;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import dev.spacety.jam.JAM;
+import dev.spacety.jam.handlers.ServerSettingsHandler;
 
 public class DifficultyPage extends GUIPage {
     public DifficultyPage(Player player) {
@@ -11,6 +15,38 @@ public class DifficultyPage extends GUIPage {
             player.sendMessage(JAM.getString("messages.feature-coming-soon").replace("{feature}", "Difficulty"));
             player.closeInventory();
             return;
+        }
+    }
+
+    @Override
+    public void handleClick(ItemStack clickedItem) {
+        if (clickedItem.getType() == Material.ARROW) {
+            player.openInventory(new ServerSettingsPage(player).getInventory());
+            return;
+        }
+        switch (clickedItem.getType()) {
+            case GRASS_BLOCK:
+                if (JAM.getBoolean("features.server-settings.difficulty-control")) {
+                    ServerSettingsHandler.setDifficulty(player, player.getWorld(), Difficulty.PEACEFUL);
+                }
+                break;
+            case WOODEN_SWORD:
+                if (JAM.getBoolean("features.server-settings.difficulty-control")) {
+                    ServerSettingsHandler.setDifficulty(player, player.getWorld(), Difficulty.EASY);
+                }
+                break;
+            case IRON_SWORD:
+                if (JAM.getBoolean("features.server-settings.difficulty-control")) {
+                    ServerSettingsHandler.setDifficulty(player, player.getWorld(), Difficulty.NORMAL);
+                }
+                break;
+            case DIAMOND_SWORD:
+                if (JAM.getBoolean("features.server-settings.difficulty-control")) {
+                    ServerSettingsHandler.setDifficulty(player, player.getWorld(), Difficulty.HARD);
+                }
+                break;
+            default:
+                break;
         }
     }
 

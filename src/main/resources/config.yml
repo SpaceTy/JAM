@@ -7,6 +7,10 @@ gui:
   self-management: "§8JAM Admin Panel - Self Management"
   server-settings: "§8JAM Admin Panel - Server Settings"
   difficulty-selection: "§8JAM Admin Panel - Difficulty Selection"
+  time: "§8JAM Admin Panel - Time Control"
+  weather: "§8JAM Admin Panel - Weather Control"
+  kick-player: "§8JAM Admin Panel - Kick Player"
+  kick-confirm: "§8JAM Admin Panel - Confirm Kick"
 
 # Messages
 messages:
@@ -24,6 +28,23 @@ features:
     kick: true
     ban: true
     player-list: true
+    kick-page:
+      enabled: true
+      player-head:
+        name: "§e{player}"
+        lore:
+          - "§7Click to select this player"
+          - "§7Click to proceed to confirmation"
+      confirm:
+        name: "§aConfirm Kick"
+        lore:
+          - "§7Click to kick player"
+          - "§7Player: {player}"
+      cancel:
+        name: "§cCancel"
+        lore:
+          - "§7Click to cancel"
+          - "§7Return to player selection"
   self-management:
     enabled: true
     teleport: true
@@ -34,6 +55,35 @@ features:
     time-control: true
     weather-control: true
     difficulty-control: true
+    time-page:
+      enabled: true
+      day:
+        name: "§eSet Day"
+        lore:
+          - "§7Set the time to day"
+          - "§7Time: 6000 ticks"
+      noon:
+        name: "§6Set Noon"
+        lore:
+          - "§7Set the time to noon"
+          - "§7Time: 12000 ticks"
+      night:
+        name: "§8Set Night"
+        lore:
+          - "§7Set the time to night"
+          - "§7Time: 18000 ticks"
+    weather-page:
+      enabled: true
+      rain:
+        name: "§bToggle Rain"
+        lore:
+          - "§7Create rain"
+          - "§7Click to change weather"
+      clear:
+        name: "§eClear Weather"
+        lore:
+          - "§7Set weather to clear"
+          - "§7Click to stop rain"
     difficulty-page:
       enabled: true
       peaceful:

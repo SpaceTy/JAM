@@ -19,6 +19,8 @@ public abstract class GUIPage {
         initialize();
     }
 
+    public abstract void handleClick(ItemStack clickedItem);
+
     protected void initialize() {
         fillWithGlass();
         initializeItems();
@@ -44,6 +46,10 @@ public abstract class GUIPage {
             meta.setLore(java.util.Arrays.asList(lore));
             item.setItemMeta(meta);
         }
+        inventory.setItem(slot, item);
+    }
+
+    protected void addItemStack(int slot, ItemStack item) {
         inventory.setItem(slot, item);
     }
 
